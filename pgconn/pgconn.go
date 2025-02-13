@@ -399,6 +399,13 @@ func connectOne(ctx context.Context, config *Config, connectConfig *connectOneCo
 				pgConn.conn.Close()
 				return nil, newPerDialConnectError("failed to write password message", err)
 			}
+		case *pgproto3.AuthenticationSM3Password:
+			digestedPassword := "sm3" + Sm3ToString(Sm3ToString(pgConn.config.Password+pgConn.config.User)+string(msg.Salt[:]))
+			err = pgConn.txPasswordMessage(digestedPassword)
+			if err != nil {
+				pgConn.conn.Close()
+				return nil, newPerDialConnectError("failed to write password message", err)
+			}
 		case *pgproto3.AuthenticationSASL:
 			err = pgConn.scramAuth(msg.AuthMechanisms)
 			if err != nil {

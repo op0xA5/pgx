@@ -39,6 +39,8 @@ func (t *tracer) traceMessage(sender byte, encodedLen int32, msg Message) {
 		t.traceAuthenticationGSSContinue(sender, encodedLen, msg)
 	case *AuthenticationMD5Password:
 		t.traceAuthenticationMD5Password(sender, encodedLen, msg)
+	case *AuthenticationSM3Password:
+		t.traceAuthenticationSM3Password(sender, encodedLen, msg)
 	case *AuthenticationOk:
 		t.traceAuthenticationOk(sender, encodedLen, msg)
 	case *AuthenticationSASL:
@@ -140,6 +142,9 @@ func (t *tracer) traceAuthenticationGSSContinue(sender byte, encodedLen int32, m
 
 func (t *tracer) traceAuthenticationMD5Password(sender byte, encodedLen int32, msg *AuthenticationMD5Password) {
 	t.writeTrace(sender, encodedLen, "AuthenticationMD5Password", nil)
+}
+func (t *tracer) traceAuthenticationSM3Password(sender byte, encodedLen int32, msg *AuthenticationSM3Password) {
+	t.writeTrace(sender, encodedLen, "AuthenticationSM3Password", nil)
 }
 
 func (t *tracer) traceAuthenticationOk(sender byte, encodedLen int32, msg *AuthenticationOk) {
